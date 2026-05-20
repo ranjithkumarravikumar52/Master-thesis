@@ -1,9 +1,25 @@
-/Excel_JSON/nbproject/private/
-/Excel_JSON/build/
-/Excel_JSON/dist/
-*.xlsx
-elasticsearch-5.6.2
-kibana-5.6.2-windows-x86
-logstash-5.6.3
-I386
+# Build output
+/build/
+/dist/
 *.class
+
+# NetBeans IDE
+nbproject/private/
+nbproject/Makefile-*.mk
+nbproject/Package-*.bash
+
+# Excel data files (raw research data)
+*.xlsx
+*.xls
+
+# ELK Stack distributions (install separately — see README)
+elasticsearch-*/
+kibana-*/
+logstash-*/
+
+# Maven
+target/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
