@@ -25,16 +25,31 @@ Please check out the [ProQuest link](https://search.proquest.com/openview/845ddd
 
 ## Installation
 
-- Java JDK
+- Java JDK 8+
+- [Maven](https://maven.apache.org/download.cgi) — manages all Java dependencies automatically
 - [Elasticsearch 6.2.4](https://www.elastic.co/downloads/past-releases/elasticsearch-6-2-4) — download and install separately
 - [Kibana 6.2.4](https://www.elastic.co/downloads/past-releases/kibana-6-2-4) — download and install separately
 - Excel sheet containing the raw survey data
 
 ---
 
+#### Build
+
+Run the following to download all dependencies and compile the project:
+
+```bash
+mvn compile
+```
+
+To produce a runnable JAR:
+
+```bash
+mvn package
+```
+
 #### Java Documentation
 
-- The project contains two packages: `ParseUtil` and `main`
+- The project contains two packages: `ParseUtil` and `main`, located under `src/main/java/`
 - `ParseUtil` contains two classes — `ElasticSearchServer.java` and `ExcelFile.java`
 - In `ElasticSearchServer.java`, update the static variables to set your port number, index name, and document name for Elasticsearch
 - In `App.java` (main package), set the name of your Excel file to be parsed
@@ -82,7 +97,7 @@ GET ranjith-thesis
 1. Download the survey data from Google Sheets as an Excel file and place it in the project's working directory
 2. In `App.java`, update the filename to match your Excel file
 3. Make sure Elasticsearch and Kibana are running in the background
-4. Run `App.java` — it will parse the Excel file and push each row to Elasticsearch as a JSON document
+4. Run `mvn compile` to download dependencies, then run `App.java` — it will parse the Excel file and push each row to Elasticsearch as a JSON document
 5. Once the push completes, open Kibana and create visualizations from the indexed data
 
 ---

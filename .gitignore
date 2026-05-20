@@ -17,6 +17,9 @@ elasticsearch-*/
 kibana-*/
 logstash-*/
 
+# Maven
+target/
+
 # OS artifacts
 .DS_Store
 Thumbs.db
