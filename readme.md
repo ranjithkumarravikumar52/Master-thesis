@@ -1,108 +1,128 @@
-### A study of social factors in activity-based active learning classroom correlated to students' performance
+# A study of social factors in activity-based active learning classrooms correlated to students' performance
 
-#### What is this paper about?
+## What is this paper about?
 
-In our observational study of students, we formulated and evaluated Group Cohesion score along with its sub-components (Goal Settings, Communication, Trust, Accountability and Recognition), social factors (from open-ended answers) and sentiment analysis (from the LIWC tool).
+In our observational study of students, we formulated and evaluated a Group Cohesion score along with its sub-components (Goal Settings, Communication, Trust, Accountability, and Recognition), social factors (from open-ended answers), and sentiment analysis (from the LIWC tool).
 
 By taking into consideration our ABAL (activity-based active learning) classroom approach, we provided results correlating these points with academic performance. We found that the Trust trait and three social factors (C1, A1, and R3) collectively had a high and positive correlation with academic performance, while the remaining factors had a less significant correlation. However, when we analyzed data samples with a weekly comparison of student performance against the independent variables, we found no strong correlation.
 
-Please check out the [ProQuest link](https://search.proquest.com/openview/845ddd436ec9148ca974121de5b949a9/1.pdf?pq-origsite=gscholar&cbl=18750&diss=y) for the full published paper, the [thesis PDF](doc/Thesis%20Published.pdf) in this repo, or the [defense slides](doc/Final%20defense.pdf) for a quick overview. **Cheers!**
+Please check out the [ProQuest link](https://search.proquest.com/openview/845ddd436ec9148ca974121de5b949a9/1.pdf?pq-origsite=gscholar&cbl=18750&diss=y) for the full published paper, the [thesis PDF](doc/Thesis%20Published.pdf) in this repo, or the [defense slides](doc/Final%20defense.pdf) for a quick overview.
 
 ---
 
 ## Contents
 
-- [Installation](#installation)
-- [Java Documentation](#java-documentation)
-- [Setting up the ELK Environment](#setting-up-the-elk-environment)
-- [Elasticsearch API Quick Reference](#some-basic-commands-to-check-status-of-elasticsearch-server)
+- [Prerequisites](#prerequisites)
+- [Build](#build)
+- [Project Structure](#project-structure)
+- [ELK Stack Setup](#elk-stack-setup)
+- [Elasticsearch API Quick Reference](#elasticsearch-api-quick-reference)
 - [Usage](#usage)
-- [Research Questions](#research-questions-i-was-trying-to-solve)
-- [Experiment Constraints](#constraints-for-experiment)
-- [Credits](#thanks-and-credits)
+- [Research Questions](#research-questions)
+- [Experiment Constraints](#experiment-constraints)
+- [Credits](#credits)
 
 ---
 
-## Installation
+## Prerequisites
 
 - Java JDK 8+
 - [Maven](https://maven.apache.org/download.cgi) — manages all Java dependencies automatically
 - [Elasticsearch 6.2.4](https://www.elastic.co/downloads/past-releases/elasticsearch-6-2-4) — download and install separately
 - [Kibana 6.2.4](https://www.elastic.co/downloads/past-releases/kibana-6-2-4) — download and install separately
-- Excel sheet containing the raw survey data
+- An Excel file containing your survey/observational data (not included in this repo)
 
 ---
 
-#### Build
+## Build
 
-Run the following to download all dependencies and compile the project:
+Run the following once to download all dependencies and compile the project:
 
 ```bash
 mvn compile
 ```
 
-To produce a runnable JAR:
-
-```bash
-mvn package
-```
-
-#### Java Documentation
-
-- The project contains two packages: `ParseUtil` and `main`, located under `src/main/java/`
-- `ParseUtil` contains two classes — `ElasticSearchServer.java` and `ExcelFile.java`
-- In `ElasticSearchServer.java`, update the static variables to set your port number, index name, and document name for Elasticsearch
-- In `App.java` (main package), set the name of your Excel file to be parsed
+After that, open the project in any Java IDE (IntelliJ IDEA, Eclipse, VS Code with the Java extension) and run `App.java` directly from the IDE. The compiled classes will be in `target/classes/`.
 
 ---
 
-#### Setting up the ELK (Elasticsearch Kibana) Environment
+## Project Structure
+
+```
+src/main/java/
+├── main/
+│   └── App.java                  # Entry point — set your Excel filename here
+└── ParseUtil/
+    ├── ElasticSearchServer.java  # HTTP client that pushes JSON to Elasticsearch
+    └── ExcelFile.java            # Reads .xlsx files and converts rows to JSON
+```
+
+**Configuration before running:**
+
+- In `ElasticSearchServer.java` — update the static variables for your port, index name, and document name
+- In `App.java` — update the filename to match your Excel file
+
+---
+
+## ELK Stack Setup
 
 1. [Download Elasticsearch 6.2.4](https://www.elastic.co/downloads/past-releases/elasticsearch-6-2-4) and extract it
-2. Run Elasticsearch
+2. Start Elasticsearch:
    - Navigate to `elasticsearch-6.2.4/bin`
-   - Run `elasticsearch` (Linux/Mac) or `elasticsearch.bat` (Windows)
+   - Run `./elasticsearch` (Linux/Mac) or `elasticsearch.bat` (Windows)
+   - Verify it's running at `http://localhost:9200`
    - ![Elasticsearch running](doc/elasticsearch.png?raw=true)
 3. [Download Kibana 6.2.4](https://www.elastic.co/downloads/past-releases/kibana-6-2-4) and extract it
-4. Run Kibana
+4. Start Kibana:
    - Navigate to `kibana-6.2.4-<your-platform>/bin`
-   - Run `kibana` (Linux/Mac) or `kibana.bat` (Windows)
-5. Open Kibana in your browser at `http://localhost:5601`
+   - Run `./kibana` (Linux/Mac) or `kibana.bat` (Windows)
+5. Open Kibana at `http://localhost:5601`
    - ![Kibana dashboard](doc/kibana.png?raw=true)
 
 ---
 
-#### Some basic commands to check status of Elasticsearch server
+## Elasticsearch API Quick Reference
 
-Run these using `curl` or any HTTP client:
+These are REST API calls — run them via **Kibana's Dev Tools console** (`http://localhost:5601/app/kibana#/dev_tools`) or with `curl`:
 
-```bash
+```
 # List all indices
 GET /_cat/indices?v
 
-# Delete an index
-DELETE /index-name?pretty
+# Delete an index (replace <your-index> with your index name)
+DELETE /<your-index>?pretty
 
-# View documents in the thesis index
-GET ranjith-thesis/?pretty
+# View index metadata
+GET /<your-index>?pretty
 
 # View all documents in an index
-GET ranjith-thesis
+GET /<your-index>/_search?pretty
+```
+
+Using `curl`:
+
+```bash
+# List all indices
+curl http://localhost:9200/_cat/indices?v
+
+# View all documents
+curl http://localhost:9200/<your-index>/_search?pretty
 ```
 
 ---
 
 ## Usage
 
-1. Download the survey data from Google Sheets as an Excel file and place it in the project's working directory
-2. In `App.java`, update the filename to match your Excel file
-3. Make sure Elasticsearch and Kibana are running in the background
-4. Run `mvn compile` to download dependencies, then run `App.java` — it will parse the Excel file and push each row to Elasticsearch as a JSON document
-5. Once the push completes, open Kibana and create visualizations from the indexed data
+1. Export your survey/observational data from Google Sheets as an `.xlsx` file and place it in the project's root directory
+2. In `App.java`, set the filename to match your Excel file
+3. In `ElasticSearchServer.java`, set the index name and document type to match your study
+4. Make sure Elasticsearch and Kibana are running (see [ELK Stack Setup](#elk-stack-setup))
+5. Run `mvn compile` to download all dependencies, then run `App.java` from your IDE
+6. Once the data is pushed, open Kibana and use **Discover** to browse your data and **Visualize** to build charts
 
 ---
 
-#### Research Questions I was trying to solve
+## Research Questions
 
 - **RQ1**: What social attributes impact a group member's confidence?
 - **RQ2**: How do group members' social attributes affect the group's performance?
@@ -111,16 +131,16 @@ GET ranjith-thesis
 
 ---
 
-#### Constraints for experiment
+## Experiment Constraints
 
-1. The goal was to convert data gathered from observational studies (online surveys and direct observation) into visualizations — preferably Kibana
+1. The goal was to convert data from observational studies (online surveys and direct observation) into visualizations — preferably using Kibana
 2. All data was collected in Google Sheets over 11–12 weeks from September–November 2017
-3. Visualizing the data directly from Google Sheets was difficult to maintain as data was updated regularly
-4. The ELK stack solved this by allowing data to be pushed to Elasticsearch and visualized in Kibana continuously
-5. This also made it much easier to present findings to others compared to raw spreadsheets
+3. Visualizing data directly from Google Sheets was difficult to maintain as it was updated regularly
+4. The ELK stack allowed data to be pushed continuously to Elasticsearch and visualized in Kibana
+5. This also made it much easier to present findings compared to raw spreadsheets
 
 ---
 
-#### Thanks and credits
+## Credits
 
 - University of North Carolina at Charlotte
